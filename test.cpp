@@ -133,9 +133,58 @@ void test8() {
 	cout << (string)pr4319().slabo_desno_inv_kvur() << '\n';
 }
 
+// Konstrukcija faktor automata iz primera 4.3.6
+void test9() {
+	nfa a = pr436();
+	a = a.faktor(a.desno_inv_kvur());
+	for (const auto& dx : a.prelazi())
+		cout << (string)dx << '\n';
+	cout << (string)a.sigma() << "\n\n";
+	cout << (string)a.tau() << "\n\n";
+}
+
+void test10() {
+	nfa a = pr4319();
+	nfa b = a.faktor(a.slabo_desno_inv_kvur());
+
+	for (const auto& c : b.prelazi())
+		cout << (string)c << '\n';
+	cout << (string)b.sigma() << '\n';
+	cout << (string)b.tau() << '\n';
+
+	relacija r = b.slabo_levo_inv_kvur();
+	cout << "levo = \n" << (string)r << '\n';
+	nfa d = b.faktor(r);
+
+	for (const auto& c : d.prelazi())
+		cout << (string)c << '\n';
+	cout << (string)d.sigma() << '\n';
+	cout << (string)d.tau() << '\n';
+}
+
+void test11() {
+	nfa a = pr4319();
+	nfa b = a.leva_naizmenicna_redukcija();
+	nfa c = a.desna_naizmenicna_redukcija();
+
+	cout << "levo=\n";
+
+	for (const auto& dd : b.prelazi())
+		cout << (string)dd << '\n';
+	cout << (string)b.sigma() << '\n';
+	cout << (string)b.tau() << '\n';
+
+	cout << "desno=\n";
+
+	for (const auto& dd : c.prelazi())
+		cout << (string)dd << '\n';
+	cout << (string)c.sigma() << '\n';
+	cout << (string)c.tau() << '\n';
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test8();
+	test11();
 }

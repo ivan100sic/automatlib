@@ -1,7 +1,6 @@
 ## Todo:
 
-* prirodna ekvivalencija kvazi uredjenja
-* faktor automat u odnosu na relaciju
+* simulacije i bisimulacije
 
 ## Maybe:
 

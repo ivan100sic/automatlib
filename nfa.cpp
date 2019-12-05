@@ -168,8 +168,57 @@ relacija nfa::slabo_levo_inv_ekv() const {
 	return q & q.T();
 }
 
-// nfa nfa::faktor(const relacija& r) const {
-// 	static_assert(false);
-// }
+nfa nfa::faktor(const relacija& r) const {
+	auto f = r.prirodno_preslikavanje();
+	std::vector<relacija> d2;
+	d2.reserve(d.size());
+	for (size_t i=0; i<d.size(); i++)
+		d2.emplace_back(f.T() * r * d[i] * r * f);
+	nfa a2 = *this;
+	a2.d = d2;
+	a2.s = s * r * f;
+	a2.t = r * t * f;
+	return a2;
+}
+
+nfa nfa::leva_naizmenicna_redukcija() const {
+	bool levo = true;
+	int fail = 0;
+	nfa tmp = *this;
+	while (fail < 2) {
+		size_t old_sz = tmp.t.size();
+		if (levo)
+			tmp = tmp.faktor(tmp.slabo_levo_inv_kvur());
+		else
+			tmp = tmp.faktor(tmp.slabo_desno_inv_kvur());
+		
+		if (tmp.t.size() == old_sz)
+			fail++;
+		else
+			fail = 0;
+		levo ^= 1;
+	}
+	return tmp;
+}
+
+nfa nfa::desna_naizmenicna_redukcija() const {
+	bool levo = false;
+	int fail = 0;
+	nfa tmp = *this;
+	while (fail < 2) {
+		size_t old_sz = tmp.t.size();
+		if (levo)
+			tmp = tmp.faktor(tmp.slabo_levo_inv_kvur());
+		else
+			tmp = tmp.faktor(tmp.slabo_desno_inv_kvur());
+		
+		if (tmp.t.size() == old_sz)
+			fail++;
+		else
+			fail = 0;
+		levo ^= 1;
+	}
+	return tmp;
+}
 
 }

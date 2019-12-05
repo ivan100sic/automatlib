@@ -1,6 +1,7 @@
 #include <vector>
 #include <stdexcept>
 #include <sstream>
+#include <map>
 #include "relacija.h"
 
 namespace automati {
@@ -215,6 +216,20 @@ bool relacija::je_kvaziuredjenje() const {
 
 bool relacija::je_ekvivalencija() const {
 	return je_kvaziuredjenje() && je_simetricna();
+}
+
+relacija relacija::prirodno_preslikavanje() const {
+	std::map<std::vector<unsigned char>, size_t> mp;
+	size_t j = 0;
+	for (size_t i=0; i<n; i++) {
+		if (!mp.count(a[i])) {
+			mp[a[i]] = j++;
+		}
+	}
+	relacija r(n, j);
+	for (size_t i=0; i<n; i++)
+		r[i][mp[a[i]]] = 1;
+	return r;
 }
 
 }

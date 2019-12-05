@@ -14,6 +14,12 @@ class nfa {
 
 public:
 
+	const std::vector<relacija>& prelazi() const { return d; }
+
+	const skup& sigma() const { return s; }
+
+	const skup& tau() const { return t; }
+
 	nfa(const std::vector<relacija>& d, const std::string& l,
 		const skup& s, const skup& t);
 
@@ -41,7 +47,11 @@ public:
 
 	relacija slabo_levo_inv_ekv() const;
 
-	// nfa faktor(const relacija& r) const;
+	nfa faktor(const relacija& r) const;
+
+	nfa leva_naizmenicna_redukcija() const;
+
+	nfa desna_naizmenicna_redukcija() const;
 
 };
 

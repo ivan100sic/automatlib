@@ -84,6 +84,7 @@ public:
 
 	bool je_ekvivalencija() const;
 
+	relacija prirodno_preslikavanje() const;
 };
 
 }
