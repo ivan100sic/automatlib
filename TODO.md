@@ -1,6 +1,6 @@
 ## Todo:
 
-* simulacije i bisimulacije
+* Uci
 
 ## Maybe:
 

@@ -221,4 +221,144 @@ nfa nfa::desna_naizmenicna_redukcija() const {
 	return tmp;
 }
 
+std::pair<relacija, bool> nfa::forward_simulacija(const nfa& b) const {
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = t % b.t;
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= ((db * r_old.T()) / da).T();
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (s.podskup(b.s * r.T()))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::backward_simulacija(const nfa& b) const {
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = s % b.s;
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= da % (r_old * db);
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (t.podskup(r * b.t))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::forward_bisimulacija(const nfa& b) const {
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = (t % b.t) & (t / b.t);
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= ((db * r_old.T()) / da).T();
+			r &= (da * r_old) / db;
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (s.podskup(b.s * r.T()) && b.s.podskup(s * r))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::backward_bisimulacija(const nfa& b) const {
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = (s % b.s) & (s / b.s);
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= da % (r_old * db);
+			r &= (db % (r_old.T() * da)).T();
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (t.podskup(r * b.t) && b.t.podskup(r.T() * t))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::forward_backward_bisimulacija(const nfa& b)
+	const
+{
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = (t % b.t) & (s / b.s);
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= ((db * r_old.T()) / da).T();
+			r &= (db % (r_old.T() * da)).T();
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (s.podskup(b.s * r.T()) && b.t.podskup(r.T() * t))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::backward_forward_bisimulacija(const nfa& b)
+	const
+{
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	relacija r = (s % b.s) & (t / b.t);
+	while (1) {
+		relacija r_old = r;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i];
+			const auto& db = b.d[i];
+			r &= (da * r_old) / db;
+			r &= da % (r_old * db);
+		}
+		if (r == r_old)
+			break;
+	}
+
+	if (t.podskup(r * b.t) && b.s.podskup(s * r))
+		return {r, true};
+	else
+		return {r, false};
+}
+
 }

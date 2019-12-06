@@ -182,9 +182,99 @@ void test11() {
 	cout << (string)c.tau() << '\n';
 }
 
+nfa pr446a1() {
+	vector<relacija> d = {
+		relacija("110 011 100"),
+		relacija("110 001 001")
+	};
+
+	skup s("100");
+	skup t("001");
+
+	return nfa(d, "xy", s, t);
+}
+
+nfa pr446a2() {
+	vector<relacija> d = {
+		relacija("11010 11010 11000 00111 11000"),
+		relacija("11010 11010 00101 00101 00101")
+	};
+
+	skup s("11000");
+	skup t("00101");
+
+	return nfa(d, "xy", s, t);
+}
+
+// primer 4.4.6
+void test12() {
+	nfa a = pr446a1();
+	nfa b = pr446a2();
+
+	auto p = a.forward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+}
+
+nfa pr447a1() {
+	vector<relacija> d = {
+		relacija("10 00"),
+		relacija("00 11")
+	};
+
+	skup s("01");
+	skup t("10");
+
+	return nfa(d, "xy", s, t);
+}
+
+nfa pr447a2() {
+	vector<relacija> d = {
+		relacija("000 110 000"),
+		relacija("000 000 111")
+	};
+
+	skup s("001");
+	skup t("100");
+
+	return nfa(d, "xy", s, t);
+}
+
+// primer 4.4.7
+void test13() {
+	nfa a = pr447a1();
+	nfa b = pr447a2();
+
+	auto p = a.forward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.backward_simulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.backward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.backward_forward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test11();
+	test13();
 }

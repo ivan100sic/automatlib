@@ -53,6 +53,20 @@ public:
 
 	nfa desna_naizmenicna_redukcija() const;
 
+	std::pair<relacija, bool> forward_simulacija(const nfa& b) const;
+
+	std::pair<relacija, bool> backward_simulacija(const nfa& b) const;
+
+	std::pair<relacija, bool> forward_bisimulacija(const nfa& b) const;
+
+	std::pair<relacija, bool> backward_bisimulacija(const nfa& b) const;
+
+	std::pair<relacija, bool> forward_backward_bisimulacija(const nfa& b)
+		const;
+
+	std::pair<relacija, bool> backward_forward_bisimulacija(const nfa& b)
+		const;
+
 };
 
 }
