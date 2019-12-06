@@ -361,4 +361,107 @@ std::pair<relacija, bool> nfa::backward_forward_bisimulacija(const nfa& b)
 		return {r, false};
 }
 
+std::vector<std::pair<skup, skup>> nfa::tau_skup_par(const nfa& b) const {
+	if (mp != b.mp)
+		throw std::logic_error("incompatible automata");
+
+	std::set<std::pair<skup, skup>> svi;
+	std::vector<std::pair<skup, skup>> red;
+
+	size_t kraj = 0;
+	svi.insert({t, b.t});
+	red.emplace_back(t, b.t);
+
+	while (kraj != red.size()) {
+		auto rp = red[kraj++];
+		const auto& ta = rp.first;
+		const auto& tb = rp.second;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i]; 
+			const auto& db = b.d[i]; 
+			skup dra = da * ta;
+			skup drb = db * tb;
+			if (svi.insert({dra, drb}).second)
+				red.emplace_back(dra, drb);
+		}
+	}
+
+	return red;
+}
+
+std::vector<std::pair<skup, skup>> nfa::sigma_skup_par(const nfa& b) const {
+	std::set<std::pair<skup, skup>> svi;
+	std::vector<std::pair<skup, skup>> red;
+
+	size_t kraj = 0;
+	svi.insert({s, b.s});
+	red.emplace_back(s, b.s);
+
+	while (kraj != red.size()) {
+		auto rp = red[kraj++];
+		const auto& sa = rp.first;
+		const auto& sb = rp.second;
+		for (size_t i=0; i<d.size(); i++) {
+			const auto& da = d[i]; 
+			const auto& db = b.d[i]; 
+			skup dra = sa * da;
+			skup drb = sb * db;
+			if (svi.insert({dra, drb}).second)
+				red.emplace_back(dra, drb);
+		}
+	}
+
+	return red;
+}
+
+std::pair<relacija, bool> nfa::slaba_forward_simulacija(const nfa& b) const {
+	auto ts = tau_skup_par(b);
+	auto r = relacija(t.size(), b.t.size());
+	r.negate();
+	for (const auto& tu : ts)
+		r &= tu.first % tu.second;
+	if (s.podskup(b.s * r.T()))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::slaba_backward_simulacija(const nfa& b) const {
+	auto ss = sigma_skup_par(b);
+	auto r = relacija(t.size(), b.t.size());
+	r.negate();
+	for (const auto& su : ss)
+		r &= su.first % su.second;
+	if (t.podskup(r * b.t))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::slaba_forward_bisimulacija(const nfa& b) const
+{
+	auto ts = tau_skup_par(b);
+	auto r = relacija(t.size(), b.t.size());
+	r.negate();
+	for (const auto& tu : ts)
+		r &= (tu.first % tu.second) & (tu.first / tu.second);
+	if (s.podskup(b.s * r.T()) && b.s.podskup(s * r))
+		return {r, true};
+	else
+		return {r, false};
+}
+
+std::pair<relacija, bool> nfa::slaba_backward_bisimulacija(const nfa& b) const
+{
+	auto ss = sigma_skup_par(b);
+	auto r = relacija(t.size(), b.t.size());
+	r.negate();
+	for (const auto& su : ss)
+		r &= (su.first % su.second) & (su.first / su.second);
+	if (t.podskup(r * b.t) && b.t.podskup(r.T() * t))
+		return {r, true};
+	else
+		return {r, false};
+}
+
 }

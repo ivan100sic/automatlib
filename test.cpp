@@ -272,9 +272,67 @@ void test13() {
 		cout << "ne postoji\n";
 }
 
+nfa pr4429a1() {
+	vector<relacija> d = {
+		relacija("0010 0011 0000 0100"),
+		relacija("0100 0100 0010 0001")
+	};
+
+	skup s("1000"), t("0010");
+
+	return nfa(d, "xy", s, t);
+}
+
+nfa pr4429a2() {
+	vector<relacija> d = {
+		relacija("01 10"),
+		relacija("10 01")
+	};
+
+	skup s("10"), t("01");
+
+	return nfa(d, "xy", s, t);
+}
+
+// primer 4.4.29
+// imamo problem, dobijena simulacija nije ista kao u knjizi
+// a bisimulacija ne postoji
+void test14() {
+	auto a = pr4429a1();
+	auto b = pr4429a2();
+
+	auto tsk = a.tau_skup_par(b);
+	for (auto x : tsk)
+		cerr << (string)x.first << " : " << (string)x.second << '\n';
+
+	auto p = a.slaba_forward_simulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.slaba_forward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.slaba_backward_simulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+
+	p = a.slaba_backward_bisimulacija(b);
+	if (p.second)
+		cout << (string)p.first << '\n';
+	else
+		cout << "ne postoji\n";
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test13();
+	test14();
 }

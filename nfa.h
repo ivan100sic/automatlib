@@ -67,6 +67,22 @@ public:
 	std::pair<relacija, bool> backward_forward_bisimulacija(const nfa& b)
 		const;
 
+	std::vector<std::pair<skup, skup>> tau_skup_par(const nfa& b) const;
+
+	std::vector<std::pair<skup, skup>> sigma_skup_par(const nfa& b) const;
+
+	std::pair<relacija, bool> slaba_forward_simulacija(const nfa& b)
+		const;
+
+	std::pair<relacija, bool> slaba_backward_simulacija(const nfa& b)
+		const;
+
+	std::pair<relacija, bool> slaba_forward_bisimulacija(const nfa& b)
+		const;
+
+	std::pair<relacija, bool> slaba_backward_bisimulacija(const nfa& b)
+		const;
+
 };
 
 }

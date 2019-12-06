@@ -1,6 +1,6 @@
 ## Todo:
 
-* Uci
+* Uci, uradi sve zadatke sa kraja glave 4
 
 ## Maybe:
 
