@@ -9,6 +9,13 @@
 
 namespace automati {
 
+std::string nfa::alfabet() const {
+	std::string s;
+	for (const auto& p : mp)
+		s += p.first;
+	return s;
+}
+
 nfa::nfa(const std::vector<relacija>& d, const std::string& l,
 	const skup& s, const skup& t) : d(d), s(s), t(t)
 {
@@ -462,6 +469,55 @@ std::pair<relacija, bool> nfa::slaba_backward_bisimulacija(const nfa& b) const
 		return {r, true};
 	else
 		return {r, false};
+}
+
+nfa nfa::podskup_konstrukcija() const {
+	size_t n = t.size();
+	size_t N = size_t(1) << n;
+	size_t m = d.size();
+	std::vector<relacija> d2(m, relacija(N, N));
+	skup s2(N), t2(N);
+	for (size_t mask = 0; mask < N; mask++) {
+		skup x(n);
+		for (size_t i = 0; i < n; i++)
+			x[i] = (mask >> i) & 1;
+		if (x == s)
+			s2[mask] = 1;
+		t2[mask] = x * t;
+		for (size_t j = 0; j < m; j++) {
+			skup y = x * d[j];
+			size_t mask_y = 0;
+			for (size_t i = 0; i < n; i++)
+				mask_y |= size_t(y[i]) << i;
+			d2[j][mask][mask_y] = 1;
+		}
+	}
+
+	return nfa(d2, alfabet(), s2, t2);
+}
+
+nfa nfa::nerodov_automat() const {
+	auto ss = sigma_skup();
+	size_t N = ss.size();
+	size_t m = d.size();
+	std::vector<relacija> d2(m, relacija(N, N));
+	skup s2(N), t2(N);
+
+	std::map<skup, size_t> f;
+	for (size_t i = 0; i < N; i++)
+		f[ss[i]] = i;
+
+	for (size_t i = 0; i < N; i++) {
+		for (size_t j = 0; j < m; j++) {
+			auto sd = ss[i] * d[j];
+			d2[j][i][f[sd]] = 1;
+		}
+		t2[i] = ss[i] * t;
+	}
+
+	s2[0] = 1;
+
+	return nfa(d2, alfabet(), s2, t2);
 }
 
 }

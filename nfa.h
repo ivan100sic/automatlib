@@ -20,6 +20,8 @@ public:
 
 	const skup& tau() const { return t; }
 
+	std::string alfabet() const;
+
 	nfa(const std::vector<relacija>& d, const std::string& l,
 		const skup& s, const skup& t);
 
@@ -82,6 +84,10 @@ public:
 
 	std::pair<relacija, bool> slaba_backward_bisimulacija(const nfa& b)
 		const;
+
+	nfa podskup_konstrukcija() const;
+
+	nfa nerodov_automat() const;
 
 };
 

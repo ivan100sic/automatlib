@@ -314,8 +314,10 @@ void test14() {
 	p = a.slaba_forward_bisimulacija(b);
 	if (p.second)
 		cout << (string)p.first << '\n';
-	else
-		cout << "ne postoji\n";
+	else {
+		cout << "ne postoji, ali evo sta sam dobio\n";
+		cout << (string)p.first << '\n';
+	}
 
 	p = a.slaba_backward_simulacija(b);
 	if (p.second)
@@ -330,9 +332,63 @@ void test14() {
 		cout << "ne postoji\n";
 }
 
+void zad455() {
+	nfa a({
+		relacija("01000 00001 00001 00001 00001"),
+		relacija("00010 00100 00001 00001 00001")
+	}, "xy", skup("10000"), skup("00100"));
+
+	auto b = a.leva_naizmenicna_redukcija();
+	auto c = a.desna_naizmenicna_redukcija();
+
+	for (const auto& dx : b.prelazi())
+		cout << (string)dx << "\n";
+	cout << (string)b.sigma() << "\n" << (string)b.tau() << "\n\n";
+
+	for (const auto& dx : c.prelazi())
+		cout << (string)dx << "\n";
+	cout << (string)c.sigma() << "\n" << (string)c.tau() << "\n\n";
+}
+
+nfa pr514() {
+	vector<relacija> d = {
+		relacija("010 101 100"),
+		relacija("001 110 010")
+	};
+
+	skup s("100"), t("011");
+
+	return nfa(d, "xy", s, t);
+}
+
+void test15() {
+	auto a = pr514();
+	auto b = a.podskup_konstrukcija();
+
+	for (const auto& d : b.prelazi())
+		cout << (string)d << "\n";
+	cout << "\n";
+
+	cout << (string)b.sigma() << '\n';
+	cout << (string)b.tau() << '\n';
+}
+
+void test16() {
+	auto a = pr514();
+	auto b = a.nerodov_automat();
+
+	for (const auto& d : b.prelazi())
+		cout << (string)d << "\n";
+	cout << "\n";
+
+	cout << (string)b.sigma() << '\n';
+	cout << (string)b.tau() << '\n';
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test14();
+	test15();
+	test16();
 }

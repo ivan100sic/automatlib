@@ -1,6 +1,8 @@
 ## Todo:
 
-* Uci, uradi sve zadatke sa kraja glave 4
+* Uci
+* Nerodov automat
+* Pogledati knjigu za jos
 
 ## Maybe:
 
