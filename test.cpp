@@ -341,13 +341,8 @@ void zad455() {
 	auto b = a.leva_naizmenicna_redukcija();
 	auto c = a.desna_naizmenicna_redukcija();
 
-	for (const auto& dx : b.prelazi())
-		cout << (string)dx << "\n";
-	cout << (string)b.sigma() << "\n" << (string)b.tau() << "\n\n";
-
-	for (const auto& dx : c.prelazi())
-		cout << (string)dx << "\n";
-	cout << (string)c.sigma() << "\n" << (string)c.tau() << "\n\n";
+	cout << (string)b << '\n';
+	cout << (string)c << '\n';
 }
 
 nfa pr514() {
@@ -362,33 +357,50 @@ nfa pr514() {
 }
 
 void test15() {
-	auto a = pr514();
-	auto b = a.podskup_konstrukcija();
-
-	for (const auto& d : b.prelazi())
-		cout << (string)d << "\n";
-	cout << "\n";
-
-	cout << (string)b.sigma() << '\n';
-	cout << (string)b.tau() << '\n';
+	cout << (string)pr514().podskup_konstrukcija();
 }
 
 void test16() {
-	auto a = pr514();
-	auto b = a.nerodov_automat();
+	cout << (string)pr514().nerodov_automat();
+}
 
-	for (const auto& d : b.prelazi())
-		cout << (string)d << "\n";
-	cout << "\n";
+nfa pr518() {
+	vector<relacija> d = {
+		relacija("11010 11010 11000 00111 11000"),
+		relacija("11010 11010 00101 00101 00101")
+	};
 
-	cout << (string)b.sigma() << '\n';
-	cout << (string)b.tau() << '\n';
+	skup s("11001"), t("00001");
+
+	return nfa(d, "xy", s, t);
+}
+
+void test17() {
+	cout << (string)pr518().nerodov_automat();
+}
+
+nfa pr5111() {
+	vector<relacija> d = {
+		relacija("011 100 010"),
+		relacija("010 011 100")
+	};
+
+	skup s("011"), t("100");
+
+	return nfa(d, "xy", s, t);
+}
+
+void test18() {
+	auto a = pr5111();
+	auto b = a.reverzni_nerodov_automat();
+
+	cout << (string)a.reverzni_nerodov_automat() << '\n';
+	cout << (string)a.reverzni_automat().nerodov_automat() << '\n';
 }
 
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test15();
-	test16();
+	zad455();
 }

@@ -1,7 +1,6 @@
 ## Todo:
 
 * Uci
-* Nerodov automat
 * Pogledati knjigu za jos
 
 ## Maybe:

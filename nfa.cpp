@@ -35,6 +35,20 @@ nfa::nfa(const std::vector<relacija>& d, const std::string& l,
 	}
 }
 
+nfa::operator std::string() const {
+	std::string str;
+	for (const auto& dx : d) {
+		str += (std::string)dx;
+		str += '\n';
+	}
+
+	str += (std::string)s;
+	str += '\n';
+	str += (std::string)t;
+	str += '\n';
+	return str;
+}
+
 skup nfa::pokreni(const std::string& b) const {
 	if (b.size() == 0)
 		return s;
@@ -513,6 +527,38 @@ nfa nfa::nerodov_automat() const {
 			d2[j][i][f[sd]] = 1;
 		}
 		t2[i] = ss[i] * t;
+	}
+
+	s2[0] = 1;
+
+	return nfa(d2, alfabet(), s2, t2);
+}
+
+nfa nfa::reverzni_automat() const {
+	nfa t = *this;
+	std::swap(t.s, t.t);
+	for (auto& dx : t.d)
+		dx = dx.T();
+	return t;
+}
+
+nfa nfa::reverzni_nerodov_automat() const {
+	auto ts = tau_skup();
+	size_t N = ts.size();
+	size_t m = d.size();
+	std::vector<relacija> d2(m, relacija(N, N));
+	skup s2(N), t2(N);
+
+	std::map<skup, size_t> f;
+	for (size_t i = 0; i < N; i++)
+		f[ts[i]] = i;
+
+	for (size_t i = 0; i < N; i++) {
+		for (size_t j = 0; j < m; j++) {
+			auto td = d[j] * ts[i];
+			d2[j][i][f[td]] = 1;
+		}
+		t2[i] = ts[i] * s;
 	}
 
 	s2[0] = 1;

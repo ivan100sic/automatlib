@@ -24,6 +24,8 @@ public:
 
 	nfa(const std::vector<relacija>& d, const std::string& l,
 		const skup& s, const skup& t);
+	
+	operator std::string () const;
 
 	skup pokreni(const std::string& s) const;
 
@@ -88,6 +90,11 @@ public:
 	nfa podskup_konstrukcija() const;
 
 	nfa nerodov_automat() const;
+
+	nfa reverzni_automat() const;
+
+	nfa reverzni_nerodov_automat() const;
+
 
 };
 
