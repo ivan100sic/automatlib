@@ -21,4 +21,4 @@ test: $(ALLO) test.o
 	$(CC) $(ALLO) test.o -o test
 
 clean:
-	rm -f relacija.o skup.o sr-cross.o test.o test
+	rm -f $(ALLO) test.o test

@@ -398,9 +398,41 @@ void test18() {
 	cout << (string)a.reverzni_automat().nerodov_automat() << '\n';
 }
 
+// primer 5.2.5
+void test19() {
+	auto a = pr514();
+	auto r = a.desno_inv_kvur();
+	auto s = a.slabo_desno_inv_kvur();
+	cout << (string)a << "\n~~\n";
+	cout << (string)r << "\n~~\n";
+	cout << (string)s << "\n~~\n";
+	cout << (string)a.determinizacija_sdiku(r) << "\n~~\n";
+	cout << (string)a.determinizacija_sdiku(s) << "\n~~\n";
+	cout << (string)a.faktor(s).nerodov_automat() << "\n~~\n";
+}
+
+// 5.2.13
+void test20() {
+	auto a = pr5111();
+	auto s = a.slabo_levo_inv_kvur();
+	auto b = a.determinizacija_sliku(s);
+	cout << (string)a << "\n~~\n";
+	cout << (string)s << "\n~~\n";
+	cout << (string)b << "\n~~\n";
+
+	// poredjenja radi
+	auto a_rev = a.reverzni_automat();
+	auto s_rev = a_rev.slabo_desno_inv_kvur();
+	auto b_rev = a_rev.determinizacija_sdiku(s_rev);
+
+	cout << (string)b_rev << "\n~~\n";
+
+	// dobija se isto, dakle ovo je ekv. raditi test19 na a_rev
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	zad455();
+	test20();
 }

@@ -95,6 +95,13 @@ public:
 
 	nfa reverzni_nerodov_automat() const;
 
+	std::vector<skup> sigma_skup(const relacija& r) const;
+
+	std::vector<skup> tau_skup(const relacija& r) const;
+
+	nfa determinizacija_sdiku(const relacija& r) const;
+
+	nfa determinizacija_sliku(const relacija& r) const;
 
 };
 

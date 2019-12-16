@@ -566,4 +566,92 @@ nfa nfa::reverzni_nerodov_automat() const {
 	return nfa(d2, alfabet(), s2, t2);
 }
 
+std::vector<skup> nfa::sigma_skup(const relacija& r) const {
+	std::set<skup> svi;
+	std::vector<skup> red;
+
+	size_t kraj = 0;
+	svi.insert(s * r);
+	red.emplace_back(s * r);
+
+	while (kraj != red.size()) {
+		skup ru = red[kraj++];
+		for (const auto& dx : d) {
+			skup rux = ru * dx * r;
+			if (svi.insert(rux).second)
+				red.emplace_back(std::move(rux));
+		}
+	}
+
+	return red;
+}
+
+std::vector<skup> nfa::tau_skup(const relacija& r) const {
+	std::set<skup> svi;
+	std::vector<skup> red;
+
+	size_t kraj = 0;
+	svi.insert(r * t);
+	red.emplace_back(r * t);
+
+	while (kraj != red.size()) {
+		skup su = red[kraj++];
+		for (const auto& dx : d) {
+			skup sxu = r * dx * su;
+			if (svi.insert(sxu).second)
+				red.emplace_back(std::move(sxu));
+		}
+	}
+
+	return red;
+}
+
+nfa nfa::determinizacija_sdiku(const relacija& r) const {
+	auto ss = sigma_skup(r);
+	size_t N = ss.size();
+	size_t m = d.size();
+	std::vector<relacija> d2(m, relacija(N, N));
+	skup s2(N), t2(N);
+
+	std::map<skup, size_t> f;
+	for (size_t i = 0; i < N; i++)
+		f[ss[i]] = i;
+
+	for (size_t i = 0; i < N; i++) {
+		for (size_t j = 0; j < m; j++) {
+			auto sd = ss[i] * d[j] * r;
+			d2[j][i][f[sd]] = 1;
+		}
+		t2[i] = ss[i] * t;
+	}
+
+	s2[0] = 1;
+
+	return nfa(d2, alfabet(), s2, t2);
+}
+
+nfa nfa::determinizacija_sliku(const relacija& r) const {
+	auto ts = tau_skup(r);
+	size_t N = ts.size();
+	size_t m = d.size();
+	std::vector<relacija> d2(m, relacija(N, N));
+	skup s2(N), t2(N);
+
+	std::map<skup, size_t> f;
+	for (size_t i = 0; i < N; i++)
+		f[ts[i]] = i;
+
+	for (size_t i = 0; i < N; i++) {
+		for (size_t j = 0; j < m; j++) {
+			auto td = r * d[j] * ts[i];
+			d2[j][i][f[td]] = 1;
+		}
+		t2[i] = ts[i] * s;
+	}
+
+	s2[0] = 1;
+
+	return nfa(d2, alfabet(), s2, t2);
+}
+
 }
