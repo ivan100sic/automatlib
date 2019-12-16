@@ -430,9 +430,19 @@ void test20() {
 	// dobija se isto, dakle ovo je ekv. raditi test19 na a_rev
 }
 
+// primer 5.3.6
+void test21() {
+	auto a = pr514();
+	auto s = a.slabo_desno_inv_kvur();
+	cout << (string)a << "\n~~\n";
+	cout << (string)a.nerodov_automat() << "\n~~\n";
+	cout << (string)a.determinizacija_sdiku(s) << "\n~~\n";
+	cout << (string)a.deciji_automat(s) << "\n~~\n";
+}
+
 int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	test20();
+	test19();
 }

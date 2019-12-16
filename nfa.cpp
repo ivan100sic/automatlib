@@ -654,4 +654,57 @@ nfa nfa::determinizacija_sliku(const relacija& r) const {
 	return nfa(d2, alfabet(), s2, t2);
 }
 
+nfa nfa::deciji_automat(const relacija& r) const {
+	using std::vector;
+
+	auto ss = sigma_skup(r);
+	size_t N1 = ss.size();
+	size_t m = d.size();
+
+	std::map<skup, size_t> f1;
+	for (size_t i = 0; i < N1; i++)
+		f1[ss[i]] = i;
+
+	vector<vector<size_t>> all_ruc(N1);
+
+	for (size_t i = 0; i < N1; i++) {
+		vector<size_t> ruc(m + 1);
+		for (size_t j = 0; j < m; j++) {
+			auto sd = ss[i] * d[j] * r;
+			ruc[j] = f1[sd];
+		}
+		ruc[m] = ss[i] * t;
+		all_ruc[i] = std::move(ruc);
+	}
+
+	auto unique_ruc = all_ruc;
+	std::sort(unique_ruc.begin(), unique_ruc.end());
+	unique_ruc.erase(std::unique(unique_ruc.begin(), unique_ruc.end()),
+		unique_ruc.end());
+
+	size_t N2 = unique_ruc.size();
+
+	skup s2(N2), t2(N2);
+	vector<relacija> d2(m, relacija(N2, N2));
+
+	for (size_t i = 0; i < N2; i++) {
+		for (size_t j = 0; j < m; j++) {
+			size_t y = std::lower_bound(
+				unique_ruc.begin(), unique_ruc.end(),
+				all_ruc[unique_ruc[i][j]]
+			) - unique_ruc.begin();
+			d2[j][i][y] = 1;
+		}
+		t2[i] = unique_ruc[i][m];
+	}
+
+	size_t y = std::lower_bound(
+		unique_ruc.begin(), unique_ruc.end(),
+		all_ruc[0]
+	) - unique_ruc.begin();
+	s2[y] = 1;
+
+	return nfa(d2, alfabet(), s2, t2);
+}
+
 }

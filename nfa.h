@@ -103,6 +103,8 @@ public:
 
 	nfa determinizacija_sliku(const relacija& r) const;
 
+	nfa deciji_automat(const relacija& r) const;
+
 };
 
 }
